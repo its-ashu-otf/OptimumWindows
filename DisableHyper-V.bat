@@ -53,6 +53,37 @@ PowerShell -ExecutionPolicy Unrestricted -Command "$featureName = 'Microsoft-Hyp
 :: ----------------------------------------------------------
 
 
+REM Define the registry key paths
+set "key1=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard"
+set "key2=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa"
+set "key3=HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity"
+
+REM Define the value names
+set "value1=EnableVirtualizationBasedSecurity"
+set "value2=LsaCfgFlags"
+set "value3=Enabled"
+
+REM Set the value data
+set "data1=0"
+set "data2=0"
+set "data3=0"
+
+REM Add the first registry entry
+reg add "%key1%" /v "%value1%" /t REG_DWORD /d %data1% /f >nul 2>&1
+
+REM Add the second registry entry
+reg add "%key2%" /v "%value2%" /t REG_DWORD /d %data2% /f >nul 2>&1
+
+REM Modify the value data of the third registry entry
+reg add "%key3%" /v "%value3%" /t REG_DWORD /d %data3% /f >nul 2>&1
+
+REM Check if the registry entries were added/modified successfully
+if %errorlevel% equ 0 (
+    echo Registry entries added/modified successfully.
+) else (
+    echo Failed to add/modify registry entries.
+)
+
 :: Pause the script to view the final state
 pause
 :: Restore previous environment settings
